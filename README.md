@@ -11,7 +11,7 @@ Currently the following tags can be used. The image builds on the WordPress imag
 The image can be used identically to the official WordPress image. You can take a look at their description or use a **docker-compose.yml** similar like this:
 
 ```yml
-version: '3.1'
+version: '3'
 
 services:
   wordpress:
@@ -22,8 +22,8 @@ services:
     volumes:
       - ./wp-content/:/var/www/html/wp-content
     environment:
-      - WORDPRESS_DB_HOST: mariadb
-      - WORDPRESS_DB_PASSWORD: example
+      WORDPRESS_DB_HOST: mariadb
+      WORDPRESS_DB_PASSWORD: example
 
   mariadb:
     image: mariadb
