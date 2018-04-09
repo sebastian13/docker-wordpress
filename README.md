@@ -7,7 +7,7 @@ This image is based on the [official WordPress image](https://hub.docker.com/_/w
 ## Supported tags
 Currently the following tags can be used. The image builds on the WordPress image with the same tag.
 
-* `latest`
+* `php7.2-apache` `latest`
 * `php7.1-apache`
 
 ## How to use this image
