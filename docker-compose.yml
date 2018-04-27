@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  wordpress:
+    image: plocek/wordpress
+    restart: always
+    volumes:
+      - ./wp-content/:/var/www/html/wp-content
+    environment:
+      - WORDPRESS_DB_PASSWORD=${DB_PASS}
+      - WORDPRESS_DB_NAME=${URL}
+    networks:
+      - default
+      - proxy-tier
+
+  mysql:
+    image: mariadb
+    restart: always
+    volumes:
+      - ./datadir:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASS}
+    networks:
+      - default
+
+  dbbackup:
+    image: yloeffler/mysql-backup
+    volumes:
+      - ./dbdumps/:/backup
+    depends_on:
+      - mysql
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_DB=${URL}
+      - MYSQL_USER=root
+      - MYSQL_PASS=${DB_PASS}
+      - MYSQL_PORT=3306
+      - INIT_BACKUP=true
+      - MAX_BACKUPS="5"
+    networks:
+      - default
+
+networks:
+  proxy-tier:
+    external:
+      name: www-network
