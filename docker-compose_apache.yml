@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  wordpress:
+    image: plocek/wordpress
+    restart: always
+    volumes:
+      - ./wp-content/:/var/www/html/wp-content
+    environment:
+      - WORDPRESS_DB_NAME=${MYSQL_DATABASE}
+      - WORDPRESS_DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    networks:
+      - default
+      - proxy-tier
+
+  mysql:
+    image: mariadb
+    restart: always
+    volumes:
+      - ./datadir:/var/lib/mysql
+    env_file: .env
+
+networks:
+  proxy-tier:
+    external:
+      name: www-network
