@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  wordpress:
+    image: wordpress:php7.2-fpm
+    restart: always
+    expose:
+      - '9000'
+    volumes:
+      - ./wordpress:/var/www/html
+    environment:
+      - WORDPRESS_DB_NAME=${MYSQL_DATABASE}
+      - WORDPRESS_DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    depends_on:
+      - mysql
+    networks:
+      - default
+      - proxy-tier
+
+  mysql:
+    image: mariadb
+    restart: always
+    volumes:
+      - ./datadir:/var/lib/mysql
+    env_file: .env
+
+  nginx:
+    image: nginx
+    restart: always
+    expose:
+      - '80'
+    depends_on:
+      - wordpress
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/snippets:/etc/nginx/snippets:ro
+      - ./wordpress:/var/www/html:ro
+    networks:
+      - default
+      - proxy-tier   
+
+networks:
+  proxy-tier:
+    external:
+      name: www-network
